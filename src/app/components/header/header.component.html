@@ -1,1 +1,12 @@
-<p>header works!</p>
+<header>
+    <img [src]="airlineLogo" alt="Airline Logo">
+    <h1>{{ airlineName }}</h1>
+    <app-nav></app-nav>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="openSettings()">Settings</button>
+        <button mat-menu-item (click)="logout()">Logout</button>
+    </mat-menu>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>account_circle</mat-icon>
+    </button>
+</header>
