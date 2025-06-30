@@ -1,1 +1,40 @@
-<p>landing-page works!</p>
+<div class="landing-container">
+    <h1>Airlines Manager Calculator</h1>
+    <mat-tab-group>
+        <mat-tab label="Login">
+            <form (ngSubmit)="login()">
+                <mat-form-field>
+                    <input matInput placeholder="Email" [(ngModel)]="email" name="email" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="password" placeholder="Password" [(ngModel)]="password" name="password"
+                        required>
+                </mat-form-field>
+                <button mat-raised-button color="primary" type="submit">Login</button>
+                <button mat-button (click)="googleLogin()">Login with Google</button>
+            </form>
+        </mat-tab>
+        <mat-tab label="Register">
+            <form (ngSubmit)="register()">
+                <mat-form-field>
+                    <input matInput placeholder="Email" [(ngModel)]="email" name="email" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="password" placeholder="Password" [(ngModel)]="password" name="password"
+                        required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Airline Name" [(ngModel)]="airlineName" name="airlineName" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Hub IATA" [(ngModel)]="hubIata" name="hubIata" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Hub City" [(ngModel)]="hubCity" name="hubCity" required>
+                </mat-form-field>
+                <button mat-raised-button color="primary" type="submit">Register</button>
+                <button mat-button (click)="googleLogin()">Register with Google</button>
+            </form>
+        </mat-tab>
+    </mat-tab-group>
+</div>
