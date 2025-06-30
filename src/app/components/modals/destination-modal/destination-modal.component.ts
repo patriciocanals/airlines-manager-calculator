@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Route } from '../../../models/route.model';
 import { RouteService } from '../../../services/route.service';
@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
+import * as L from 'leaflet';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { MatDialogModule } from '@angular/material/dialog';
   templateUrl: './destination-modal.component.html',
   styleUrl: './destination-modal.component.scss'
 })
-export class DestinationModalComponent {
+export class DestinationModalComponent implements AfterViewInit {
   route: Route = {
     id: undefined,
     originIata: '',
@@ -51,4 +52,18 @@ export class DestinationModalComponent {
       this.dialogRef.close();
     }
   }
+
+  ngAfterViewInit() {
+    const map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const origin: L.LatLngExpression = [51.505, -0.09]; //ejemplo
+    const destination: L.LatLngExpression = [48.8566, 2.3522]; //ejemplo
+
+    L.polyline([origin, destination], { color: 'blue' }).addTo(map);
+    map.fitBounds([origin, destination]);
+  }
+
 }
