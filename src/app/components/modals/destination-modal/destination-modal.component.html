@@ -1,1 +1,18 @@
-<p>destination-modal works!</p>
+<h2>Route Details</h2>
+<img [src]="route.planeImage" alt="Plane">
+<mat-form-field>
+    <input matInput placeholder="Economy Price" [(ngModel)]="route.economyPrice" name="economyPrice">
+</mat-form-field>
+<mat-form-field>
+    <input matInput placeholder="Business Price" [(ngModel)]="route.businessPrice" name="businessPrice">
+</mat-form-field>
+<mat-form-field>
+    <input matInput placeholder="First Class Price" [(ngModel)]="route.firstPrice" name="firstPrice">
+</mat-form-field>
+<mat-form-field>
+    <input matInput placeholder="Comments" [(ngModel)]="route.comments" name="comments">
+</mat-form-field>
+<div id="map"></div>
+<button mat-raised-button color="primary" (click)="save()">Save</button>
+<button mat-raised-button color="warn" (click)="delete()">Delete</button>
+<button mat-button (click)="dialogRef.close()">Close</button>
