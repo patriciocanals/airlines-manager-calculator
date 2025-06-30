@@ -1,1 +1,53 @@
-<p>calculator works!</p>
+<form (ngSubmit)="calculate()">
+    <mat-form-field>
+        <input matInput placeholder="Origin IATA" [(ngModel)]="originIata" name="originIata" readonly>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Origin City" [(ngModel)]="originCity" name="originCity" readonly>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Destination IATA" [(ngModel)]="destinationIata" name="destinationIata" required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Destination City" [(ngModel)]="destinationCity" name="destinationCity" required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="number" placeholder="Airport Category (1-10)" [(ngModel)]="airportCategory"
+            name="airportCategory" required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="number" placeholder="Distance (km)" [(ngModel)]="distance" name="distance" required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="number" placeholder="Economy Demand" [(ngModel)]="economyDemand" name="economyDemand"
+            required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="number" placeholder="Business Demand" [(ngModel)]="businessDemand" name="businessDemand"
+            required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="number" placeholder="First Class Demand" [(ngModel)]="firstDemand" name="firstDemand"
+            required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="number" placeholder="Cargo Demand (tons)" [(ngModel)]="cargoDemand" name="cargoDemand"
+            required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Turnaround Time (HH:MM)" [(ngModel)]="turnaroundTime" name="turnaroundTime"
+            required>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="number" placeholder="Number of Planes" [(ngModel)]="planeCount" name="planeCount"
+            required>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Calculate</button>
+</form>
+<mat-list *ngIf="suggestedPlanes.length">
+    <mat-list-item *ngFor="let plane of suggestedPlanes">
+        <img [src]="'assets/planes/' + plane.img" alt="Plane">
+        <span>{{ plane.brand }} {{ plane.model }} ({{ plane.pax }} seats, {{ plane.range }} km)</span>
+        <button mat-button (click)="addRoute(plane)">Add to Route</button>
+    </mat-list-item>
+</mat-list>
