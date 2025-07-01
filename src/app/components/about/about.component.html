@@ -1,1 +1,29 @@
-<p>about works!</p>
+<div class="about-container">
+    <mat-card>
+        <mat-card-title>About Your Airline</mat-card-title>
+        <mat-card-content>
+            <p>
+                Welcome to your virtual airline! Our mission is to provide players of Airlines Manager Tycoon
+                with the best tools to optimize their routes and grow their fleet. Founded with a passion for
+                aviation, we aim to simulate the experience of running a world-class airline.
+            </p>
+            <video controls width="100%" aria-label="Promotional video">
+                <source src="assets/videos/promo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </mat-card-content>
+    </mat-card>
+    <mat-card>
+        <mat-card-title>Our Fleet</mat-card-title>
+        <mat-card-content>
+            <mat-list>
+                @for (plane of planes; track plane.model) {
+                <mat-list-item>
+                    <img [src]="'assets/planes/' + plane.img" alt="{{ plane.brand }} {{ plane.model }}" width="50">
+                    <span>{{ plane.brand }} {{ plane.model }} ({{ plane.pax }} seats, {{ plane.range }} km)</span>
+                </mat-list-item>
+                }
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+</div>

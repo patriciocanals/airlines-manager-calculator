@@ -44,10 +44,14 @@
     </mat-form-field>
     <button mat-raised-button color="primary" type="submit">Calculate</button>
 </form>
-<mat-list *ngIf="suggestedPlanes.length">
-    <mat-list-item *ngFor="let plane of suggestedPlanes">
+@if (suggestedPlanes.length) {
+<mat-list>
+    @for (plane of suggestedPlanes; track plane.model) {
+    <mat-list-item>
         <img [src]="'assets/planes/' + plane.img" alt="Plane">
         <span>{{ plane.brand }} {{ plane.model }} ({{ plane.pax }} seats, {{ plane.range }} km)</span>
         <button mat-button (click)="addRoute(plane)">Add to Route</button>
     </mat-list-item>
+    }
 </mat-list>
+}

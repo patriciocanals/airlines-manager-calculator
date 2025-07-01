@@ -1,6 +1,7 @@
 <div class="dashboard">
     <h2>Your Routes</h2>
-    <mat-card *ngFor="let route of routes">
+    @for (route of routes; track route.id) {
+    <mat-card>
         <img [src]="route.planeImage" alt="Plane">
         <h3>{{ route.originIata }} - {{ route.destinationIata }}</h3>
         <p>Economy: ${{ route.economyPrice }}</p>
@@ -9,4 +10,5 @@
         <p>Turnarounds: {{ route.turnarounds }}</p>
         <button mat-button (click)="viewDetails(route)">View Details</button>
     </mat-card>
+    }
 </div>

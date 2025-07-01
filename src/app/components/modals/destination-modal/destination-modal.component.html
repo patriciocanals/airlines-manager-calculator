@@ -1,18 +1,32 @@
 <h2>Route Details</h2>
-<img [src]="route.planeImage" alt="Plane">
+<img [src]="route.planeImage" alt="Plane image" width="100">
 <mat-form-field>
-    <input matInput placeholder="Economy Price" [(ngModel)]="route.economyPrice" name="economyPrice">
+    <input matInput placeholder="Economy Price" [(ngModel)]="route.economyPrice" name="economyPrice" type="number"
+        aria-label="Economy price">
 </mat-form-field>
 <mat-form-field>
-    <input matInput placeholder="Business Price" [(ngModel)]="route.businessPrice" name="businessPrice">
+    <input matInput placeholder="Business Price" [(ngModel)]="route.businessPrice" name="businessPrice" type="number"
+        aria-label="Business price">
 </mat-form-field>
 <mat-form-field>
-    <input matInput placeholder="First Class Price" [(ngModel)]="route.firstPrice" name="firstPrice">
+    <input matInput placeholder="First Class Price" [(ngModel)]="route.firstPrice" name="firstPrice" type="number"
+        aria-label="First class price">
 </mat-form-field>
 <mat-form-field>
-    <input matInput placeholder="Comments" [(ngModel)]="route.comments" name="comments">
+    <input matInput placeholder="Turnarounds" [(ngModel)]="route.turnarounds" name="turnarounds" type="number"
+        aria-label="Turnarounds">
 </mat-form-field>
-<div id="map"></div>
-<button mat-raised-button color="primary" (click)="save()">Save</button>
-<button mat-raised-button color="warn" (click)="delete()">Delete</button>
-<button mat-button (click)="dialogRef.close()">Close</button>
+<mat-form-field>
+    <textarea matInput placeholder="Comments" [(ngModel)]="route.comments" name="comments"
+        aria-label="Comments"></textarea>
+</mat-form-field>
+@if (showMap) {
+<div id="map" style="height: 300px; margin-top: 20px;"></div>
+} @else {
+<div class="no-map">Map not available (coordinates missing)</div>
+}
+<div class="actions">
+    <button mat-raised-button color="primary" (click)="save()" aria-label="Save route">Save</button>
+    <button mat-raised-button color="warn" (click)="delete()" aria-label="Delete route">Delete</button>
+    <button mat-button (click)="dialogRef.close()" aria-label="Close modal">Close</button>
+</div>

@@ -7,5 +7,6 @@ export const environment = {
         storageBucket: "airlinesmanager-9873d.firebasestorage.app",
         messagingSenderId: "753822936917",
         appId: "1:753822936917:web:d9e07df29cd0a72277c9dc"
-    }
+    },
+    geoapifyApiKey: 'd931fcbf722e4179abd90ab4fadcf8c3'
 };

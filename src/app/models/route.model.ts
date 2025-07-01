@@ -1,3 +1,5 @@
+import { LatLngTuple } from "leaflet";
+
 export interface Route {
     id?: string,
     originIata: string,
@@ -12,4 +14,7 @@ export interface Route {
     turnarounds: number;
     flights: number;
     comments: string;
+
+    originCoords?: LatLngTuple; // [lat, lng]
+    destinationCoords?: LatLngTuple; // [lat, lng]
 }

@@ -1,1 +1,21 @@
-<p>contact works!</p>
+<div class="contact-container">
+    <mat-card>
+        <mat-card-title>Contact Us</mat-card-title>
+        <mat-card-content>
+            <form (ngSubmit)="submitContact()">
+                <mat-form-field>
+                    <input matInput placeholder="Name" [(ngModel)]="name" name="name" required aria-label="Your name">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Email" [(ngModel)]="email" name="email" type="email" required
+                        aria-label="Your email">
+                </mat-form-field>
+                <mat-form-field>
+                    <textarea matInput placeholder="Message" [(ngModel)]="message" name="message" required
+                        aria-label="Your message"></textarea>
+                </mat-form-field>
+                <button mat-raised-button color="primary" type="submit" aria-label="Send message">Send</button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

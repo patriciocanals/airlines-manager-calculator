@@ -1,1 +1,23 @@
-<p>destinations works!</p>
+<div class="destinations-container">
+    <mat-form-field>
+        <input matInput placeholder="Filter by city/airport" (input)="filterRoutes($event)"
+            aria-label="Filter destinations">
+    </mat-form-field>
+    <button mat-button (click)="sortRoutes('asc')" aria-label="Sort ascending">Sort Ascending</button>
+    <button mat-button (click)="sortRoutes('desc')" aria-label="Sort descending">Sort Descending</button>
+    <mat-list>
+        @for (route of filteredRoutes; track route.id) {
+        <mat-list-item>
+            <img [src]="route.planeImage" alt="Plane image" width="50">
+            <span>{{ route.originIata }} ({{ route.originCity }}) - {{ route.destinationIata }} ({{
+                route.destinationCity }})</span>
+            <button mat-button (click)="openDetails(route)" aria-label="View route details">Details</button>
+        </mat-list-item>
+        }
+    </mat-list>
+    @if (showMap) {
+    <div id="map" style="height: 400px; margin-top: 20px;"></div>
+    } @else {
+    <div class="no-map">Map not available (coordinates missing)</div>
+    }
+</div>
