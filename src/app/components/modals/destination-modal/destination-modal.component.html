@@ -1,32 +1,103 @@
-<h2>Route Details</h2>
-<img [src]="route.planeImage" alt="Plane image" width="100">
-<mat-form-field>
-    <input matInput placeholder="Economy Price" [(ngModel)]="route.economyPrice" name="economyPrice" type="number"
-        aria-label="Economy price">
-</mat-form-field>
-<mat-form-field>
-    <input matInput placeholder="Business Price" [(ngModel)]="route.businessPrice" name="businessPrice" type="number"
-        aria-label="Business price">
-</mat-form-field>
-<mat-form-field>
-    <input matInput placeholder="First Class Price" [(ngModel)]="route.firstPrice" name="firstPrice" type="number"
-        aria-label="First class price">
-</mat-form-field>
-<mat-form-field>
-    <input matInput placeholder="Turnarounds" [(ngModel)]="route.turnarounds" name="turnarounds" type="number"
-        aria-label="Turnarounds">
-</mat-form-field>
-<mat-form-field>
-    <textarea matInput placeholder="Comments" [(ngModel)]="route.comments" name="comments"
-        aria-label="Comments"></textarea>
-</mat-form-field>
-@if (showMap) {
-<div id="map" style="height: 300px; margin-top: 20px;"></div>
-} @else {
-<div class="no-map">Map not available (coordinates missing)</div>
-}
-<div class="actions">
-    <button mat-raised-button color="primary" (click)="save()" aria-label="Save route">Save</button>
-    <button mat-raised-button color="warn" (click)="delete()" aria-label="Delete route">Delete</button>
-    <button mat-button (click)="dialogRef.close()" aria-label="Close modal">Close</button>
+<div class="modal-container">
+    <div class="modal-header">
+        <h2>Add Route</h2>
+        <button mat-icon-button class="close-button" (click)="closeModal()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="modal-content">
+        <form [formGroup]="routeForm" (ngSubmit)="saveRoute()">
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>Origin IATA</mat-label>
+                    <input matInput formControlName="originIata" placeholder="e.g., MAD">
+                    <mat-error *ngIf="routeForm.get('originIata')?.hasError('required')">Origin IATA is
+                        required</mat-error>
+                    <mat-error *ngIf="routeForm.get('originIata')?.hasError('pattern')">Must be 3 uppercase
+                        letters</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Origin City</mat-label>
+                    <input matInput formControlName="originCity" placeholder="e.g., Madrid">
+                    <mat-error *ngIf="routeForm.get('originCity')?.hasError('required')">Origin City is
+                        required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Destination IATA</mat-label>
+                    <input matInput formControlName="destinationIata" placeholder="e.g., BCN">
+                    <mat-error *ngIf="routeForm.get('destinationIata')?.hasError('required')">Destination IATA is
+                        required</mat-error>
+                    <mat-error *ngIf="routeForm.get('destinationIata')?.hasError('pattern')">Must be 3 uppercase
+                        letters</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Destination City</mat-label>
+                    <input matInput formControlName="destinationCity" placeholder="e.g., Barcelona">
+                    <mat-error *ngIf="routeForm.get('destinationCity')?.hasError('required')">Destination City is
+                        required</mat-error>
+                </mat-form-field>
+                @for (plane of planeSelections; track $index) {
+                <mat-form-field appearance="outline">
+                    <mat-label>Plane {{$index + 1}}</mat-label>
+                    <mat-select [value]="planeSelections[$index]"
+                        (selectionChange)="updatePlaneSelection($index, $event.value)">
+                        @for (p of planes; track p.model) {
+                        <mat-option [value]="p.brand + ' ' + p.model">{{ p.brand }} {{ p.model }}</mat-option>
+                        }
+                    </mat-select>
+                    <mat-error *ngIf="routeForm.get('plane')?.hasError('required')">Plane is required</mat-error>
+                </mat-form-field>
+                }
+                <mat-form-field appearance="outline">
+                    <mat-label>Economy Price ($)</mat-label>
+                    <input matInput type="number" formControlName="economyPrice" min="0">
+                    <mat-error *ngIf="routeForm.get('economyPrice')?.hasError('required')">Economy Price is
+                        required</mat-error>
+                    <mat-error *ngIf="routeForm.get('economyPrice')?.hasError('min')">Price cannot be
+                        negative</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Business Price ($)</mat-label>
+                    <input matInput type="number" formControlName="businessPrice" min="0">
+                    <mat-error *ngIf="routeForm.get('businessPrice')?.hasError('required')">Business Price is
+                        required</mat-error>
+                    <mat-error *ngIf="routeForm.get('businessPrice')?.hasError('min')">Price cannot be
+                        negative</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>First Class Price ($)</mat-label>
+                    <input matInput type="number" formControlName="firstPrice" min="0">
+                    <mat-error *ngIf="routeForm.get('firstPrice')?.hasError('required')">First Class Price is
+                        required</mat-error>
+                    <mat-error *ngIf="routeForm.get('firstPrice')?.hasError('min')">Price cannot be negative</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Turnarounds</mat-label>
+                    <input matInput type="number" formControlName="turnarounds" readonly>
+                    <mat-error *ngIf="routeForm.get('turnarounds')?.hasError('required')">Turnarounds is
+                        required</mat-error>
+                    <mat-error *ngIf="routeForm.get('turnarounds')?.hasError('min')">Must be at least 1</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Flights</mat-label>
+                    <input matInput type="number" formControlName="flights" readonly>
+                    <mat-error *ngIf="routeForm.get('flights')?.hasError('required')">Flights is required</mat-error>
+                    <mat-error *ngIf="routeForm.get('flights')?.hasError('min')">Flights cannot be negative</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Comments</mat-label>
+                    <textarea matInput formControlName="comments" rows="4"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="map-container">
+                <div #map id="map" style="height: 200px;"></div>
+            </div>
+            <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit"
+                    [disabled]="routeForm.invalid || isSaving">Save</button>
+                <button mat-raised-button color="warn" type="button" (click)="closeModal()">Cancel</button>
+            </div>
+            <mat-error *ngIf="error">{{ error }}</mat-error>
+        </form>
+    </div>
 </div>

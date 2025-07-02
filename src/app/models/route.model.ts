@@ -6,7 +6,7 @@ export interface Route {
     originCity: string;
     destinationIata: string;
     destinationCity: string;
-    plane: string;
+    plane: string[];
     planeImage: string;
     economyPrice: number;
     businessPrice: number;
@@ -14,6 +14,7 @@ export interface Route {
     turnarounds: number;
     flights: number;
     comments: string;
+    planeCount?: number;
 
     originCoords?: LatLngTuple; // [lat, lng]
     destinationCoords?: LatLngTuple; // [lat, lng]

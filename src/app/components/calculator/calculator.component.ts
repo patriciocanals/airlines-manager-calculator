@@ -139,7 +139,8 @@ export class CalculatorComponent implements AfterViewInit {
     const businessDemandNum = parseFloat(this.businessDemand);
     const firstDemandNum = parseFloat(this.firstDemand);
     const cargoDemandNum = parseFloat(this.cargoDemand);
-    const planeCountNum = parseFloat(this.planeCount);
+    const planeCountNum = parseFloat(this.planeCount) || 1;
+    const baseTurnarounds = Math.floor((24 * 60) / this.turnaroundTime);
 
     if (isNaN(distanceNum) || distanceNum <= 0) {
       this.error = 'Please enter a valid distance greater than 0.';
@@ -215,20 +216,23 @@ export class CalculatorComponent implements AfterViewInit {
     const economyDemandNum = parseFloat(this.economyDemand) || 0;
     const businessDemandNum = parseFloat(this.businessDemand) || 0;
     const firstDemandNum = parseFloat(this.firstDemand) || 0;
+    const planeCountNum = parseFloat(this.planeCount) || 1;
+    const baseTurnarounds = Math.floor((24 * 60) / this.turnaroundTime);
 
     const route: Route = {
       originIata: this.originIata,
       originCity: this.originCity,
       destinationIata: this.destinationIata,
       destinationCity: this.destinationCity,
-      plane: `${plane.brand} ${plane.model}`,
+      plane: new Array(planeCountNum).fill(`${plane.brand} ${plane.model}`),
       planeImage: plane.img ? `assets/planes/${plane.img}` : 'assets/placeholder.jpg',
       economyPrice: economyDemandNum * 10,
       businessPrice: businessDemandNum * 20,
       firstPrice: firstDemandNum * 40,
-      turnarounds: Math.floor((24 * 60) / this.turnaroundTime),
-      flights: 0,
-      comments: ''
+      turnarounds: baseTurnarounds * planeCountNum,
+      flights: baseTurnarounds * planeCountNum * 2,
+      comments: '',
+      planeCount: planeCountNum,
     };
 
     this.dialog.open(DestinationModalComponent, {
