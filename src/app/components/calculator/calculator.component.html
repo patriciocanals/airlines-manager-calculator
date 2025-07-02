@@ -1,57 +1,172 @@
-<form (ngSubmit)="calculate()">
-    <mat-form-field>
-        <input matInput placeholder="Origin IATA" [(ngModel)]="originIata" name="originIata" readonly>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Origin City" [(ngModel)]="originCity" name="originCity" readonly>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Destination IATA" [(ngModel)]="destinationIata" name="destinationIata" required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Destination City" [(ngModel)]="destinationCity" name="destinationCity" required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput type="number" placeholder="Airport Category (1-10)" [(ngModel)]="airportCategory"
-            name="airportCategory" required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput type="number" placeholder="Distance (km)" [(ngModel)]="distance" name="distance" required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput type="number" placeholder="Economy Demand" [(ngModel)]="economyDemand" name="economyDemand"
-            required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput type="number" placeholder="Business Demand" [(ngModel)]="businessDemand" name="businessDemand"
-            required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput type="number" placeholder="First Class Demand" [(ngModel)]="firstDemand" name="firstDemand"
-            required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput type="number" placeholder="Cargo Demand (tons)" [(ngModel)]="cargoDemand" name="cargoDemand"
-            required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Turnaround Time (HH:MM)" [(ngModel)]="turnaroundTime" name="turnaroundTime"
-            required>
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput type="number" placeholder="Number of Planes" [(ngModel)]="planeCount" name="planeCount"
-            required>
-    </mat-form-field>
-    <button mat-raised-button color="primary" type="submit">Calculate</button>
-</form>
-@if (suggestedPlanes.length) {
-<mat-list>
-    @for (plane of suggestedPlanes; track plane.model) {
-    <mat-list-item>
-        <img [src]="'assets/planes/' + plane.img" alt="Plane">
-        <span>{{ plane.brand }} {{ plane.model }} ({{ plane.pax }} seats, {{ plane.range }} km)</span>
-        <button mat-button (click)="addRoute(plane)">Add to Route</button>
-    </mat-list-item>
-    }
-</mat-list>
-}
+<div class="calculator-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Route Calculator</mat-card-title>
+      <mat-card-subtitle>Calculate optimal planes for your route</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      @if (seatOffers.economy || seatOffers.business || seatOffers.first || seatOffers.cargo) {
+      <div class="seat-offers">
+        <h3>Seat Offers per Flight</h3>
+        <p>Economy: {{ seatOffers.economy }} seats</p>
+        <p>Business: {{ seatOffers.business }} seats</p>
+        <p>First Class: {{ seatOffers.first }} seats</p>
+        <p>Cargo: {{ seatOffers.cargo }} tons</p>
+      </div>
+      }
+      <form (ngSubmit)="calculate()" #calcForm="ngForm">
+        <div class="form-grid">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Origin IATA</mat-label>
+            <input matInput [(ngModel)]="originIata" name="originIata" required>
+            <mat-error *ngIf="calcForm.controls['originIata']?.hasError('required')">Origin IATA is required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Origin City</mat-label>
+            <input matInput [(ngModel)]="originCity" name="originCity" required>
+            <mat-error *ngIf="calcForm.controls['originCity']?.hasError('required')">Origin City is required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Destination IATA</mat-label>
+            <input matInput [(ngModel)]="destinationIata" name="destinationIata" required>
+            <mat-error *ngIf="calcForm.controls['destinationIata']?.hasError('required')">Destination IATA is
+              required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Destination City</mat-label>
+            <input matInput [(ngModel)]="destinationCity" name="destinationCity" required>
+            <mat-error *ngIf="calcForm.controls['destinationCity']?.hasError('required')">Destination City is
+              required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Airport Category</mat-label>
+            <mat-select [(ngModel)]="airportCategory" name="airportCategory" required
+              (click)="onSelectClick('airportCategory')"
+              (selectionChange)="onSelectChange('airportCategory', $event.value)" panelClass="select-panel"
+              disableOptionCentering>
+              @for (cat of airportCategories; track cat) {
+              <mat-option [value]="cat">{{ cat }}</mat-option>
+              }
+            </mat-select>
+            <mat-error *ngIf="calcForm.controls['airportCategory']?.hasError('required')">Airport Category is
+              required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Distance (km)</mat-label>
+            <input matInput type="number" [(ngModel)]="distance" name="distance" required min="1">
+            <mat-error *ngIf="calcForm.controls['distance']?.hasError('required')">Distance is required</mat-error>
+            <mat-error *ngIf="calcForm.controls['distance']?.hasError('min')">Distance must be greater than
+              0</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Economy Demand</mat-label>
+            <input matInput type="number" [(ngModel)]="economyDemand" name="economyDemand" required min="0">
+            <mat-error *ngIf="calcForm.controls['economyDemand']?.hasError('required')">Economy Demand is
+              required</mat-error>
+            <mat-error *ngIf="calcForm.controls['economyDemand']?.hasError('min')">Economy Demand cannot be
+              negative</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Business Demand</mat-label>
+            <input matInput type="number" [(ngModel)]="businessDemand" name="businessDemand" required min="0">
+            <mat-error *ngIf="calcForm.controls['businessDemand']?.hasError('required')">Business Demand is
+              required</mat-error>
+            <mat-error *ngIf="calcForm.controls['businessDemand']?.hasError('min')">Business Demand cannot be
+              negative</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>First Class Demand</mat-label>
+            <input matInput type="number" [(ngModel)]="firstDemand" name="firstDemand" required min="0">
+            <mat-error *ngIf="calcForm.controls['firstDemand']?.hasError('required')">First Class Demand is
+              required</mat-error>
+            <mat-error *ngIf="calcForm.controls['firstDemand']?.hasError('min')">First Class Demand cannot be
+              negative</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Cargo Demand (tons)</mat-label>
+            <input matInput type="number" [(ngModel)]="cargoDemand" name="cargoDemand" required min="0">
+            <mat-error *ngIf="calcForm.controls['cargoDemand']?.hasError('required')">Cargo Demand is
+              required</mat-error>
+            <mat-error *ngIf="calcForm.controls['cargoDemand']?.hasError('min')">Cargo Demand cannot be
+              negative</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Turnaround Time</mat-label>
+            <mat-select [(ngModel)]="turnaroundTime" name="turnaroundTime" required
+              (click)="onSelectClick('turnaroundTime')"
+              (selectionChange)="onSelectChange('turnaroundTime', $event.value)" panelClass="select-panel"
+              disableOptionCentering>
+              @for (minutes of turnaroundOptions; track minutes) {
+              <mat-option [value]="minutes">{{ formatTime(minutes) }}</mat-option>
+              }
+            </mat-select>
+            <mat-error *ngIf="calcForm.controls['turnaroundTime']?.hasError('required')">Turnaround Time is
+              required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Number of Planes</mat-label>
+            <input matInput type="number" [(ngModel)]="planeCount" name="planeCount" required min="1">
+            <mat-error *ngIf="calcForm.controls['planeCount']?.hasError('required')">Number of Planes is
+              required</mat-error>
+            <mat-error *ngIf="calcForm.controls['planeCount']?.hasError('min')">Number of Planes must be at least
+              1</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!calcForm.valid">Calculate</button>
+          <button mat-raised-button color="warn" type="button" (click)="resetForm()">Reset</button>
+        </div>
+      </form>
+
+      @if (suggestedPlanes.length) {
+      <div class="filter-sort">
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Filter By</mat-label>
+          <mat-select [(ngModel)]="filterBy" (selectionChange)="applyFilterAndSort()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="brand">Brand</mat-option>
+            <mat-option value="category">Category</mat-option>
+          </mat-select>
+        </mat-form-field>
+        @if (filterBy !== 'all') {
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Filter Value</mat-label>
+          <input matInput [(ngModel)]="filterValue" (input)="applyFilterAndSort()">
+        </mat-form-field>
+        }
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Sort By</mat-label>
+          <mat-select [(ngModel)]="sortBy" (selectionChange)="applyFilterAndSort()">
+            <mat-option value="pax">Seats (Low to High)</mat-option>
+            <mat-option value="range">Range (Low to High)</mat-option>
+            <mat-option value="price">Price (Low to High)</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="planes-list">
+        @for (plane of filteredPlanes; track plane.model) {
+        <mat-card class="plane-card">
+          <div class="plane-content">
+            <img [src]="'assets/planes/' + plane.img" alt="{{ plane.brand }} {{ plane.model }}" class="plane-image">
+            <div class="plane-details">
+              <mat-card-title>{{ plane.brand }} {{ plane.model }}</mat-card-title>
+              <mat-card-content>
+                <p>Seats: {{ plane.pax }}</p>
+                <p>Range: {{ plane.range }} km</p>
+                <p>Category: {{ plane.cat }}</p>
+                <p>Price: ${{ plane.price.toLocaleString() }}</p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="addRoute(plane)">Add to Route</button>
+              </mat-card-actions>
+            </div>
+          </div>
+        </mat-card>
+        }
+      </div>
+      } @else if (error) {
+      <mat-error class="error">{{ error }}</mat-error>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

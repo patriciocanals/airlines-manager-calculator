@@ -1,13 +1,15 @@
 <mat-toolbar color="primary">
   <span>{{ title }}</span>
   <nav>
-    <a mat-button routerLink="/dashboard" routerLinkActive="active" aria-label="Dashboard">Dashboard</a>
+    <a mat-button routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+      aria-label="Dashboard">Dashboard</a>
     <a mat-button routerLink="/calculator" routerLinkActive="active" aria-label="Calculator">Calculator</a>
     <a mat-button routerLink="/destinations" routerLinkActive="active" aria-label="Destinations">Destinations</a>
     <a mat-button routerLink="/about" routerLinkActive="active" aria-label="About">About</a>
     <a mat-button routerLink="/contact" routerLinkActive="active" aria-label="Contact">Contact</a>
+    <button mat-button (click)="logout()" aria-label="Logout">Logout</button>
   </nav>
 </mat-toolbar>
 <main>
-  <router-outlet />
+  <router-outlet></router-outlet>
 </main>

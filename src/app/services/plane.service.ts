@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
+import { catchError } from "rxjs";
 
 export interface Plane {
     brand: string;
@@ -18,9 +19,14 @@ export interface Plane {
     providedIn: "root"
 })
 export class PlaneService {
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     getPlanes(): Observable<{ planes: Plane[] }> {
-        return this.http.get<{ planes: Plane[] }>('/assets/planes.json');
+        return this.http.get<{ planes: Plane[] }>('/assets/planes.json').pipe(
+            catchError(err => {
+                console.error('PlaneService: Error loading planes:', err);
+                return of({ planes: [] });
+            })
+        );
     }
 }

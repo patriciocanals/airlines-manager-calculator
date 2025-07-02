@@ -1,14 +1,22 @@
 <div class="dashboard">
     <h2>Your Routes</h2>
+    @if (loading) {
+    <p>Loading routes...</p>
+    } @else if (error) {
+    <p class="error">{{ error }}</p>
+    } @else if (routes.length === 0) {
+    <p>No routes available. Add a route in the Calculator or Destinations tab.</p>
+    } @else {
     @for (route of routes; track route.id) {
     <mat-card>
-        <img [src]="route.planeImage" alt="Plane">
+        <img [src]="route.planeImage" alt="Plane image" width="100">
         <h3>{{ route.originIata }} - {{ route.destinationIata }}</h3>
         <p>Economy: ${{ route.economyPrice }}</p>
         <p>Business: ${{ route.businessPrice }}</p>
         <p>First: ${{ route.firstPrice }}</p>
         <p>Turnarounds: {{ route.turnarounds }}</p>
-        <button mat-button (click)="viewDetails(route)">View Details</button>
+        <button mat-button (click)="viewDetails(route)" aria-label="View route details">View Details</button>
     </mat-card>
+    }
     }
 </div>

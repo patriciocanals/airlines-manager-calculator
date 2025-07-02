@@ -1,55 +1,38 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { Auth, signInWithPopup, GoogleAuthProvider } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-landing-page',
-  imports: [FormsModule, MatTabsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
-  templateUrl: './landing-page.component.html',
-  styleUrl: './landing-page.component.scss'
+  selector: 'app-login',
+  standalone: true,
+  imports: [MatButtonModule],
+  template: `
+    <div class="login-container">
+      <h2>Login</h2>
+      <button mat-raised-button color="primary" (click)="signInWithGoogle()" aria-label="Sign in with Google">Sign in with Google</button>
+    </div>
+  `,
+  styles: `
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+  `
 })
-export class LandingPageComponent {
-  email = '';
-  password = '';
-  airlineName = '';
-  hubIata = '';
-  hubCity = '';
+export class LoginComponent {
+  constructor(private auth: Auth, private router: Router) { }
 
-  constructor(private authService: AuthService, private router: Router) { }
-
-  async login() {
+  async signInWithGoogle() {
     try {
-      await this.authService.login(this.email, this.password);
-      this.router.navigate(['/dashboard']);
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(this.auth, provider);
+      console.log('Login: Google login successful, user:', result.user.uid);
+      await this.router.navigate(['/dashboard']);
     } catch (error) {
-      console.error('Login failed', error);
-    }
-  }
-
-  async register() {
-    try {
-      await this.authService.register(this.email, this.password, {
-        name: this.airlineName,
-        hubIata: this.hubIata,
-        hubCity: this.hubCity
-      });
-      this.router.navigate(['/dashboard']);
-    } catch (error) {
-      console.error('Registration failed', error);
-    }
-  }
-
-  async googleLogin() {
-    try {
-      await this.authService.googleLogin();
-      this.router.navigate(['/dashboard']);
-    } catch (error) {
-      console.error('Google login failed', error);
+      console.error('Login: Google login failed:', error);
     }
   }
 }
